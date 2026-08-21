@@ -2,7 +2,6 @@
 import json
 
 import pytest
-
 from _cassette import CassetteFetcher
 
 
