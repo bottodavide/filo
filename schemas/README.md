@@ -5,9 +5,13 @@ Local, offline copies of the JSON schemas filo validates against.
 
 | File | Source | Status |
 |------|--------|--------|
-| `cyclonedx-1.6.schema.json` | https://raw.githubusercontent.com/CycloneDX/specification/master/schema/bom-1.6.schema.json | ⬜ to fetch (standards-verifier, before the exporter) |
-| `cyclonedx-1.7.schema.json` | official CycloneDX specification repo | ⬜ to fetch |
+| `cyclonedx-1.6.schema.json` | git tag `1.6`, `bom-1.6.schema.json` (see `SOURCES.md`) | ✅ fetched 2026-08-21 (standards-verifier, V10) |
+| `cyclonedx-1.7.schema.json` | git tag `1.7`, `bom-1.7.schema.json` (see `SOURCES.md`) | ✅ fetched 2026-08-21 (1.7 is a released version) |
 | `filo-chain-1.schema.json`  | generated from `filo.ir.Chain` (this repo) | ⬜ to generate |
+
+Provenance, exact URLs, release status and SHA-256 hashes: see `SOURCES.md` and
+`SHA256SUMS`. Field-by-field verification against these schemas: see
+`docs/specs/2026-08-21-V10-verifica-fonti-primarie.md`.
 
 **Do not implement the CycloneDX exporter before these schemas are in place and validation
 runs in the test suite.** Producing an invalid document is a blocking defect because the file

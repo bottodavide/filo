@@ -19,7 +19,7 @@ from filo.evidence import (
 )
 from filo.ir import EvidenceRef, ExtractionMethod, LicenseConfidence
 
-URL = "https://huggingface.co/DeepMount00/rizzo-pii"
+URL = "https://huggingface.co/owner/model-a"
 
 
 def test_sha256_hex_matches_hashlib() -> None:

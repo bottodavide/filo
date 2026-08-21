@@ -23,7 +23,7 @@ from filo.ir import (
     TraversalParams,
 )
 
-URL = "https://huggingface.co/DeepMount00/rizzo-pii"
+URL = "https://huggingface.co/owner/model-a"
 
 
 def _declared_license() -> LicenseAssertion:
@@ -37,10 +37,10 @@ def _declared_license() -> LicenseAssertion:
 
 def _artifact(**kw: object) -> Artifact:
     base: dict[str, object] = dict(
-        id="hf:model:DeepMount00/rizzo-pii",
+        id="hf:model:owner/model-a",
         kind=ArtifactKind.MODEL,
         platform="huggingface",
-        name="rizzo-pii",
+        name="model-a",
         access=AccessStatus.PUBLIC,
         retrieved_at=utcnow(),
     )
@@ -125,9 +125,9 @@ def test_truncation_with_reason_ok() -> None:
 def test_chain_roundtrips_json() -> None:
     art = _artifact(licenses=[_declared_license()])
     absent_art = _artifact(
-        id="hf:dataset:DeepMount00/pii-masking-ita",
+        id="hf:dataset:owner/dataset-a",
         kind=ArtifactKind.DATASET,
-        name="pii-masking-ita",
+        name="dataset-a",
         licenses=[absent_license(URL, ["cardData.license", "frontmatter"])],
     )
     chain = Chain(
@@ -149,7 +149,7 @@ def test_chain_roundtrips_json() -> None:
     restored = Chain.model_validate_json(chain.model_dump_json())
     assert restored.roots == [art.id]
     # The broken link — the absent-license dataset — survives the round-trip.
-    ds = restored.artifacts["hf:dataset:DeepMount00/pii-masking-ita"]
+    ds = restored.artifacts["hf:dataset:owner/dataset-a"]
     assert ds.licenses[0].confidence is LicenseConfidence.ABSENT
     assert ds.licenses[0].evidence.searched_locations
 

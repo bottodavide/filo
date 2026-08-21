@@ -151,7 +151,7 @@ class AccessStatus(StrEnum):
 
 
 class Artifact(BaseModel):
-    id: str  # "hf:model:DeepMount00/rizzo-pii" — stable key
+    id: str  # "hf:model:owner/name" — stable key
     kind: ArtifactKind
     platform: str  # "huggingface", "github", "openai", ...
     namespace: str | None = None
