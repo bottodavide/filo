@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+
+# Test / coverage
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+
+# filo runtime
+out/
+.filo-cache/
+*.cdx.json.local
+
+# Secrets — never commit (public repo!)
+.env
+.env.*
+*.token
+secrets/
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/

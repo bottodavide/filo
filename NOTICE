@@ -1,0 +1,23 @@
+filo
+Copyright 2026 Davide Botto
+
+This product includes software developed by Davide Botto.
+Licensed under the Apache License, Version 2.0 (the "License").
+
+------------------------------------------------------------------------
+Third-party dependencies
+------------------------------------------------------------------------
+This section lists the direct third-party dependencies and their licenses.
+Keep it in sync with pyproject.toml. The release CI also emits a CycloneDX
+SBOM of this repository as a release artifact.
+
+- pydantic            — MIT
+- huggingface_hub     — Apache-2.0
+- httpx               — BSD-3-Clause
+- jsonschema          — MIT
+- jinja2              — BSD-3-Clause
+- fastapi             — MIT
+- uvicorn             — BSD-3-Clause
+
+(Attributions above are declared by the respective upstream projects and
+must be re-verified against the installed versions before each release.)
