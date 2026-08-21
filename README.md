@@ -8,10 +8,11 @@ CycloneDX (1.6 / 1.7) plus a neutral chain representation.
 filo **states facts**. It does not assess license compatibility and does not make legal
 judgements. What each license *requires* is out of scope on purpose.
 
-> Status: the chain walker and the `filo trace` CLI work (M0–M1). Given a Hugging Face id,
-> `filo trace owner/name` walks the chain and writes a schema-valid `chain.json` with evidence.
-> Not implemented yet: the CycloneDX 1.6/1.7 exporters (M2) and the public web demo. See
-> `DEVELOPMENT.md` for the build order and invariants.
+> Status: working through M2. `filo trace owner/name` walks the chain and writes a
+> `chain.json`, a schema-validated **CycloneDX 1.6/1.7 AIBOM** (`bom.cdx.json`), a `report.md`
+> and a Mermaid diagram — all with evidence. `filo validate <bom>` checks a BOM against the
+> official schemas offline. Not implemented yet: the public web demo (M3). See `DEVELOPMENT.md` for
+> the build order and invariants.
 
 ## The four invariants
 
