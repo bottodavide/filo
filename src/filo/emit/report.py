@@ -39,10 +39,12 @@ def to_report_md(chain: Chain) -> str:
         ev = a.licenses[0].evidence.url if a.licenses else ""
         lines.append(f"| `{a.id}` | {a.access.value} | {_license_cell(a)} | {ev} |")
     lines.append("")
+    n_absent = _count(chain, lambda a: _has(a, LicenseConfidence.ABSENT))
+    n_opaque = _count(chain, lambda a: _has(a, LicenseConfidence.OPAQUE))
     lines.append("## Gaps")
     lines.append(f"- artifacts: {len(chain.artifacts)}")
-    lines.append(f"- no declared licence: {_count(chain, lambda a: _has(a, LicenseConfidence.ABSENT))}")
-    lines.append(f"- opaque licence: {_count(chain, lambda a: _has(a, LicenseConfidence.OPAQUE))}")
+    lines.append(f"- no declared licence: {n_absent}")
+    lines.append(f"- opaque licence: {n_opaque}")
     lines.append(
         f"- inaccessible (gated/not-found/error): "
         f"{_count(chain, lambda a: a.access is not AccessStatus.PUBLIC)}"
