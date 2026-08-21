@@ -7,7 +7,8 @@ Local, offline copies of the JSON schemas filo validates against.
 |------|--------|--------|
 | `cyclonedx-1.6.schema.json` | git tag `1.6`, `bom-1.6.schema.json` (see `SOURCES.md`) | ✅ fetched 2026-08-21 (standards-verifier, V10) |
 | `cyclonedx-1.7.schema.json` | git tag `1.7`, `bom-1.7.schema.json` (see `SOURCES.md`) | ✅ fetched 2026-08-21 (1.7 is a released version) |
-| `filo-chain-1.schema.json`  | generated from `filo.ir.Chain` (this repo) | ⬜ to generate |
+| `filo-chain-1.schema.json`  | generated from `filo.ir.Chain` (this repo) | ✅ generated (M1) |
+| `spdx.schema.json`          | git tag `1.6` (external ref of the BOM schema, `license.id`) | ✅ fetched (M2) |
 
 Provenance, exact URLs, release status and SHA-256 hashes: see `SOURCES.md` and
 `SHA256SUMS`. Field-by-field verification against these schemas: see
