@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from collections import deque
 
+from filo import __version__
 from filo.evidence import absent_license, build_evidence, utcnow
 from filo.graph.model import collect_uplinks
 from filo.hub.client import HFClient, RepoInfo
@@ -42,9 +43,10 @@ def _license_for(info: RepoInfo, api_url: str) -> LicenseAssertion:
 
 def walk(
     roots, client: HFClient, params: TraversalParams | None = None, *,
-    generator: str = "filo/0.0.1",
+    generator: str | None = None,
 ) -> Chain:
     params = params or TraversalParams()
+    generator = generator or f"filo/{__version__}"
     artifacts: dict[str, Artifact] = {}
     relations: list[Relation] = []
     reasons: list[str] = []

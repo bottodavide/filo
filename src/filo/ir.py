@@ -221,7 +221,7 @@ class Chain(BaseModel):
     artifacts: dict[str, Artifact] = Field(default_factory=dict)
     relations: list[Relation] = Field(default_factory=list)
     generated_at: datetime
-    generator: str  # "filo/0.3.1"
+    generator: str  # e.g. "filo/0.0.1" — tracks filo.__version__
     traversal: TraversalParams
     warnings: list[Warning] = Field(default_factory=list)
 

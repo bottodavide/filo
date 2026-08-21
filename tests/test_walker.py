@@ -18,6 +18,17 @@ def test_walk_surfaces_absent_license(broken_chain_cassette):
     assert any(r.target_id == ds_id for r in chain.relations)
 
 
+def test_walk_generator_tracks_package_version(broken_chain_cassette, monkeypatch):
+    # The generator string is embedded in every AIBOM; it must track the
+    # installed package version, not a literal frozen at definition time.
+    import filo.graph.walker as walker_mod
+
+    monkeypatch.setattr(walker_mod, "__version__", "9.9.9")
+    client = HFClient(CassetteFetcher(broken_chain_cassette))
+    chain = walk(["acme/model-a"], client, TraversalParams(max_depth=6))
+    assert chain.generator == "filo/9.9.9"
+
+
 def test_walk_declares_truncation(broken_chain_cassette):
     client = HFClient(CassetteFetcher(broken_chain_cassette))
     chain = walk(["acme/model-a"], client, TraversalParams(max_depth=0))
