@@ -8,8 +8,10 @@ CycloneDX (1.6 / 1.7) plus a neutral chain representation.
 filo **states facts**. It does not assess license compatibility and does not make legal
 judgements. What each license *requires* is out of scope on purpose.
 
-> Status: early scaffolding (M0). The chain walker, exporters, CLI and web service are not
-> implemented yet. See `DEVELOPMENT.md` for the build order and invariants.
+> Status: the chain walker and the `filo trace` CLI work (M0–M1). Given a Hugging Face id,
+> `filo trace owner/name` walks the chain and writes a schema-valid `chain.json` with evidence.
+> Not implemented yet: the CycloneDX 1.6/1.7 exporters (M2) and the public web demo. See
+> `DEVELOPMENT.md` for the build order and invariants.
 
 ## The four invariants
 
