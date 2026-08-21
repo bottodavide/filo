@@ -20,7 +20,9 @@ _KIND_PREFIX = {
 
 # owner/name: each side starts alphanumeric (blocks leading '.', so '.'/'..'
 # segments and dotfiles are rejected) and contains only word chars, '.', '-'.
-_REPO_ID = re.compile(r"^[A-Za-z0-9][\w.-]*/[A-Za-z0-9][\w.-]*$")
+# \A..\Z (not ^..$): in Python $ also matches just before a trailing newline,
+# which would let "owner/name\n" through and crash URL construction downstream.
+_REPO_ID = re.compile(r"\A[A-Za-z0-9][\w.-]*/[A-Za-z0-9][\w.-]*\Z")
 
 
 def is_valid_repo_id(repo_id: str) -> bool:

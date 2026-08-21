@@ -10,7 +10,7 @@ from filo.ids import is_valid_repo_id
 from filo.ir import ArtifactKind, ExtractionMethod, RelationKind
 from filo.parse import cardbody, frontmatter
 
-_BASE_TAG = re.compile(r"^base_model:([\w.-]+):([A-Za-z0-9][\w.-]*/[\w.-]+)$")
+_BASE_TAG = re.compile(r"\Abase_model:([\w.-]+):([A-Za-z0-9][\w.-]*/[\w.-]+)\Z")
 _REL = {
     "finetune": RelationKind.FINETUNED_FROM,
     "adapter": RelationKind.ADAPTER_OF,

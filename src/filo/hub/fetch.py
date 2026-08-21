@@ -48,6 +48,11 @@ class HttpxFetcher:
             )
         except httpx.TimeoutException:
             return Response(status=599, text="timeout")
+        except (httpx.InvalidURL, httpx.RequestError) as exc:
+            # Defense in depth: never propagate an httpx error to the walker.
+            # A malformed value that somehow reached here becomes a recorded
+            # ERROR access state, not a crash.
+            return Response(status=598, text=f"request error: {exc}")
         body: dict | list | None = None
         if "application/json" in r.headers.get("content-type", ""):
             try:

@@ -47,3 +47,12 @@ def test_is_hf_url_rejects_other_hosts(url):
     from filo.hub.fetch import is_hf_url
 
     assert is_hf_url(url) is False
+
+
+def test_httpx_fetcher_never_raises_on_malformed_url():
+    # A control char makes httpx raise InvalidURL at request construction,
+    # before any network — the fetcher must swallow it into a Response.
+    from filo.hub.fetch import HttpxFetcher
+
+    r = HttpxFetcher().get("https://huggingface.co/api/models/acme/model-a\n")
+    assert r.status == 598 and r.json_body is None

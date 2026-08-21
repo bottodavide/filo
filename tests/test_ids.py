@@ -52,6 +52,8 @@ def test_is_valid_repo_id_accepts_normal():
         "owner//name",
         "owner/na me",
         "owner/name\r\nEvil: 1",
+        "acme/model-a\n",  # lone trailing newline ($ vs \Z regression)
+        "acme/model-a\n\n",
         "http://evil.com/x",
         "@evil.com/x",
         ".hidden/name",
