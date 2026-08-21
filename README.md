@@ -22,12 +22,10 @@ judgements. What each license *requires* is out of scope on purpose.
 
 ## Acceptance test
 
-```
-filo trace DeepMount00/rizzo-pii
-```
-
-must surface that `DeepMount00/pii-masking-ita` declares **no license**, with the evidence of
-the locations searched. If it doesn't, the tool doesn't work.
+filo is validated against a real provenance chain that contains a documented
+**missing-license link**: the tool must surface the upstream artifact that declares
+**no license**, together with the evidence of the locations it searched. If it doesn't,
+the tool doesn't work. The concrete fixture chain lives in `tests/`.
 
 ## Install (dev)
 

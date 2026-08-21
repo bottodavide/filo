@@ -28,9 +28,10 @@ Rimuovere campi o cambiarne la semantica: incrementare schema_version
 e scrivere la nota di migrazione in schemas/MIGRATIONS.md.
 
 ## Test di accettazione
-`filo trace DeepMount00/rizzo-pii` deve individuare che
-DeepMount00/pii-masking-ita non dichiara licenza, con l'evidenza dei
-percorsi cercati. Se non lo fa, lo strumento non funziona.
+Il test di accettazione fa camminare una catena reale che contiene un anello
+a licenza mancante documentato: lo strumento deve individuare l'artefatto a
+monte che non dichiara licenza, con l'evidenza dei percorsi cercati. Se non lo
+fa, lo strumento non funziona. La catena concreta vive nelle fixture in `tests/`.
 
 ## Cosa non fare
 Non scaricare pesi di modelli. Non aggiungere una base di conoscenza delle
