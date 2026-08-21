@@ -1,39 +1,42 @@
-# filo — istruzioni per lo sviluppo
+# filo — development instructions
 
-## Cosa è questo repository
-Ricostruisce la catena di provenienza di modelli e dataset su Hugging Face,
-raccoglie le licenze dichiarate con le evidenze, emette CycloneDX 1.6/1.7.
-CONSTATA I FATTI. Non valuta compatibilità, non emette giudizi giuridici.
+## What this repository is
+Reconstructs the provenance chain of models and datasets on Hugging Face,
+collects the declared licenses with their evidence, and emits CycloneDX 1.6/1.7.
+IT STATES FACTS. It does not assess compatibility and does not make legal judgements.
 
-## Invarianti — non violare mai
-1. Nessuna asserzione senza EvidenceRef. Se il tipo lo consente, il tipo è sbagliato.
-2. L'assenza è uno stato con evidenza (LicenseConfidence.ABSENT + searched_locations),
-   mai None, mai stringa vuota, mai confusa con un errore di rete.
-3. Solo constatazioni. Nessuna stringa di output può contenere "violates",
-   "non-compliant", "illegal", "infringing" o simili.
-4. Ogni limite applicato all'attraversamento è dichiarato in Chain.traversal.
-   Un troncamento silenzioso è un difetto bloccante.
-5. Nessun import da repository privati o interni. Questo codice è pubblico.
-6. Nessuna chiamata di rete nei test. Solo cassette registrate.
-7. Intestazione SPDX-License-Identifier: Apache-2.0 su ogni file sorgente.
-8. Output rivolto all'utente in inglese, in file di catalogo separati dalla logica.
+## Invariants — never violate
+1. No assertion without an EvidenceRef. If the type allows it, the type is wrong.
+2. Absence is a state with evidence (LicenseConfidence.ABSENT + searched_locations),
+   never None, never an empty string, never confused with a network error.
+3. Facts only. No output string may contain "violates", "non-compliant",
+   "illegal", "infringing" or the like.
+4. Every limit applied to the traversal is declared in Chain.traversal.
+   A silent truncation is a blocking defect.
+5. No imports from private or internal repositories. This code is public.
+6. No network calls in tests. Recorded cassettes only.
+7. An `SPDX-License-Identifier: Apache-2.0` header on every source file.
+8. User-facing output in English, in catalog files kept separate from the logic.
 
-## Ordine di costruzione
-ir.py e evidence.py per primi. Tutto il resto è un adattatore da o verso di loro.
-Non costruire CycloneDX direttamente dalle risposte dell'API.
+## Build order
+ir.py and evidence.py first. Everything else is an adapter to or from them.
+Do not build CycloneDX directly from the API responses.
 
-## Modifiche allo schema
-Aggiungere campi facoltativi: nessun cambio di schema_version.
-Rimuovere campi o cambiarne la semantica: incrementare schema_version
-e scrivere la nota di migrazione in schemas/MIGRATIONS.md.
+## Schema changes
+Adding optional fields: no schema_version bump.
+Removing fields or changing their semantics: bump schema_version and write
+the migration note in schemas/MIGRATIONS.md.
 
-## Test di accettazione
-Il test di accettazione fa camminare una catena reale che contiene un anello
-a licenza mancante documentato: lo strumento deve individuare l'artefatto a
-monte che non dichiara licenza, con l'evidenza dei percorsi cercati. Se non lo
-fa, lo strumento non funziona. La catena concreta vive nelle fixture in `tests/`.
+## Acceptance test
+The acceptance test walks a real chain that contains a documented missing-license
+link: the tool must surface the upstream artifact that declares no license, with the
+evidence of the locations it searched. If it doesn't, the tool doesn't work. The
+concrete fixture chain lives in tests/.
 
-## Cosa non fare
-Non scaricare pesi di modelli. Non aggiungere una base di conoscenza delle
-licenze. Non aggiungere logica di compatibilità. Quelle stanno altrove
-e devono restarci.
+## What not to do
+Do not download model weights. Do not add a license knowledge base. Do not add
+compatibility logic. Those live elsewhere and must stay there.
+
+## Language
+Everything in this public repository is written in English — source, comments,
+docs, and this file included.
