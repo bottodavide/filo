@@ -35,3 +35,33 @@ def test_single_name_dataset_link():
 def test_bare_single_name_model_link_is_skipped():
     # A bare single-name link (docs/blog/org pages) is too noisy for a model.
     assert find_hf_links("see https://huggingface.co/docs\n") == []
+
+
+def test_reserved_namespace_links_are_not_artifacts():
+    # Prose links to Hugging Face site paths that are NOT repositories must not
+    # enter the chain as phantom artifacts (observed on all-MiniLM-L6-v2):
+    # site assets (front/), the legacy metrics pages (metrics/), the dataset
+    # viewer (datasets/viewer), and two-segment docs/blog links.
+    body = """
+    thumbnail https://huggingface.co/front/thumbnails/v2/preview.png
+    metric https://huggingface.co/metrics/rouge
+    viewer https://huggingface.co/datasets/viewer
+    guide https://huggingface.co/docs/transformers/index
+    blog https://huggingface.co/blog/intro-to-embeddings
+    """
+    assert find_hf_links(body) == []
+
+
+def test_reserved_namespace_does_not_shadow_real_repos():
+    # The denylist must not swallow legitimate owner/name repos or canonical
+    # single-name datasets.
+    body = """
+    https://huggingface.co/acme/base-a
+    https://huggingface.co/datasets/acme/data-a
+    https://huggingface.co/datasets/code_search_net
+    """
+    keys = {(h.kind, h.repo_id) for h in find_hf_links(body)}
+    assert (ArtifactKind.MODEL, "acme/base-a") in keys
+    assert (ArtifactKind.DATASET, "acme/data-a") in keys
+    assert (ArtifactKind.DATASET, "code_search_net") in keys
+    assert len(keys) == 3
