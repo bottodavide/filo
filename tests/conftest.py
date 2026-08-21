@@ -49,7 +49,7 @@ _MALFORMED_MODEL_INFO = {
     "sha": "modelsha",
     "cardData": {
         "license": "mit",
-        "base_model": "no-slash-at-all",
+        "base_model": "owner/../evil",  # multi-segment traversal -> invalid
         "datasets": ["owner/../../etc/passwd", "acme/dataset-a"],
     },
     "tags": ["base_model:finetune:owner/.."],

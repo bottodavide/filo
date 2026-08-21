@@ -21,3 +21,17 @@ def test_finds_model_and_dataset_dedup():
 def test_captures_heading():
     hits = {h.repo_id: h.heading for h in find_hf_links(BODY)}
     assert hits["acme/data-a"] == "Training data"
+
+
+def test_single_name_dataset_link():
+    # KI-001: a canonical single-name dataset link must be a DATASET, not a
+    # model 'datasets/code_search_net'.
+    hits = find_hf_links("trained on https://huggingface.co/datasets/code_search_net\n")
+    assert len(hits) == 1
+    assert hits[0].kind is ArtifactKind.DATASET
+    assert hits[0].repo_id == "code_search_net"
+
+
+def test_bare_single_name_model_link_is_skipped():
+    # A bare single-name link (docs/blog/org pages) is too noisy for a model.
+    assert find_hf_links("see https://huggingface.co/docs\n") == []

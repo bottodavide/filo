@@ -10,7 +10,7 @@ from filo.ir import ArtifactKind, LicenseConfidence, TraversalParams
 def test_walk_surfaces_absent_license(broken_chain_cassette):
     client = HFClient(CassetteFetcher(broken_chain_cassette))
     chain = walk(["acme/model-a"], client, TraversalParams(max_depth=6))
-    ds_id = canonical_id(ArtifactKind.DATASET, "acme", "dataset-a")
+    ds_id = canonical_id(ArtifactKind.DATASET, "acme/dataset-a")
     ds = chain.artifacts[ds_id]
     assert ds.licenses[0].confidence is LicenseConfidence.ABSENT
     assert ds.licenses[0].evidence.searched_locations  # documented search

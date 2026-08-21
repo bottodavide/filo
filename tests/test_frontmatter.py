@@ -46,7 +46,7 @@ def test_no_frontmatter():
 
 
 def test_malformed_base_model_is_filtered():
-    fm = {"base_model": ["no-slash", "owner/../../etc", "acme/ok-a"]}
+    fm = {"base_model": ["owner/na me", "owner/../../etc", "acme/ok-a"]}
     assert base_models(fm) == [("acme/ok-a", None)]
 
 

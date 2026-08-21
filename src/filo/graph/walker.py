@@ -7,7 +7,7 @@ from collections import deque
 from filo.evidence import absent_license, build_evidence, utcnow
 from filo.graph.model import collect_uplinks
 from filo.hub.client import HFClient, RepoInfo
-from filo.ids import canonical_id, dedup_key, is_valid_repo_id, parse_input_id
+from filo.ids import canonical_id, dedup_key, is_valid_repo_id, namespace_name, parse_input_id
 from filo.ir import (
     AccessStatus,
     Artifact,
@@ -54,14 +54,14 @@ def walk(
     root_ids: list[str] = []
     queue: deque[tuple[ArtifactKind, str, int]] = deque()
     for raw in roots:
-        kind, ns, name = parse_input_id(raw)
-        root_ids.append(canonical_id(kind, ns, name))
-        queue.append((kind, f"{ns}/{name}", 0))
+        kind, repo_id = parse_input_id(raw)
+        root_ids.append(canonical_id(kind, repo_id))
+        queue.append((kind, repo_id, 0))
 
     while queue:
         kind, repo_id, depth = queue.popleft()
-        ns, name = repo_id.split("/", 1)
-        cid = canonical_id(kind, ns, name)
+        ns, name = namespace_name(repo_id)
+        cid = canonical_id(kind, repo_id)
         if dedup_key(cid) in visited:
             continue
         visited.add(dedup_key(cid))
@@ -102,8 +102,7 @@ def walk(
                     )
                 )
                 continue
-            tns, tname = link.repo_id.split("/", 1)
-            tid = canonical_id(link.kind, tns, tname)
+            tid = canonical_id(link.kind, link.repo_id)
             ev = build_evidence(api_url, link.method, repo_sha=info.sha, text=link.snippet)
             relations.append(
                 Relation(source_id=cid, target_id=tid, kind=link.relation,

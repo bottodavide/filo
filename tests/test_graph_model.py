@@ -45,7 +45,7 @@ def test_body_scan_inferred():
 def test_malformed_upstreams_are_dropped():
     # hostile base_model and a traversal-y dataset must not become uplinks
     info = _info(
-        {"base_model": "no-slash", "datasets": ["owner/../../etc/passwd"]},
+        {"base_model": "owner/na me", "datasets": ["owner/../../etc/passwd"]},
         ["base_model:finetune:owner/.."],
     )
     assert collect_uplinks(info, readme=None, no_body_scan=True) == []
