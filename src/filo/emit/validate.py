@@ -17,6 +17,7 @@ from referencing import Registry, Resource
 from referencing.jsonschema import DRAFT7
 
 _SCHEMAS = Path(__file__).resolve().parents[3] / "schemas"
+_ALLOWED_SPECS = frozenset({"1.6", "1.7"})
 
 
 @functools.lru_cache(maxsize=1)
@@ -29,6 +30,10 @@ def spdx_ids() -> frozenset[str]:
 
 @functools.lru_cache(maxsize=4)
 def _validator(spec_version: str) -> Draft7Validator:
+    if spec_version not in _ALLOWED_SPECS:
+        # Defense in depth: never interpolate an unvalidated spec_version into a
+        # file path, regardless of the caller (CLI, or a future web service).
+        raise ValueError(f"unsupported spec_version: {spec_version!r}")
     bom = json.loads((_SCHEMAS / f"cyclonedx-{spec_version}.schema.json").read_text())
     spdx = json.loads((_SCHEMAS / "spdx.schema.json").read_text())
     registry = Registry().with_resources(

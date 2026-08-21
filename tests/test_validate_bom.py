@@ -45,3 +45,10 @@ def test_validates_1_7():
     bom = _min_bom()
     bom["specVersion"] = "1.7"
     validate_bom(bom, "1.7")
+
+
+def test_rejects_bad_spec_version_no_path_traversal():
+    # Defense in depth: a spec_version passed directly (bypassing argparse
+    # choices) must not become a file-path traversal primitive.
+    with pytest.raises(ValueError):
+        validate_bom(_min_bom(), "1.6/../../../../etc/hostname")

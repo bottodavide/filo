@@ -10,13 +10,29 @@ from filo.catalog_en import BOUNDARY_SENTENCE, assert_factual
 from filo.ir import AccessStatus, Chain, LicenseConfidence
 
 
+def _md_escape(text: str | None) -> str:
+    """Neutralise untrusted text before it enters a Markdown table cell:
+    collapse newlines, escape the table separator, and defang raw HTML angle
+    brackets. Prevents third-party card content from forging table rows."""
+    if not text:
+        return ""
+    return (
+        text.replace("\r", " ")
+        .replace("\n", " ")
+        .replace("|", "\\|")
+        .replace("<", "&lt;")
+        .replace(">", "&gt;")
+    )
+
+
 def _license_cell(a) -> str:
     if not a.licenses:
         return "—"
     la = a.licenses[0]
     if la.confidence is LicenseConfidence.ABSENT:
         return "none declared"
-    label = la.spdx_id or la.raw_value or "declared"
+    # spdx_id is whitelisted by to_spdx; raw_value is verbatim third-party text.
+    label = la.spdx_id or _md_escape(la.raw_value) or "declared"
     return f"{label} ({la.confidence.value})"
 
 
@@ -36,8 +52,11 @@ def to_report_md(chain: Chain) -> str:
     lines.append("| Artifact | Access | Declared licence | Evidence |")
     lines.append("|---|---|---|---|")
     for a in chain.artifacts.values():
-        ev = a.licenses[0].evidence.url if a.licenses else ""
-        lines.append(f"| `{a.id}` | {a.access.value} | {_license_cell(a)} | {ev} |")
+        ev = str(a.licenses[0].evidence.url) if a.licenses else ""
+        lines.append(
+            f"| `{_md_escape(a.id)}` | {a.access.value} "
+            f"| {_license_cell(a)} | {_md_escape(ev)} |"
+        )
     lines.append("")
     n_absent = _count(chain, lambda a: _has(a, LicenseConfidence.ABSENT))
     n_opaque = _count(chain, lambda a: _has(a, LicenseConfidence.OPAQUE))

@@ -9,7 +9,7 @@ primary sources referenced in spec §10) on **2026-08-21**.
 |------|--------------|--------------|----------------|---------------|---------|
 | `cyclonedx-1.6.schema.json` | https://raw.githubusercontent.com/CycloneDX/specification/1.6/schema/bom-1.6.schema.json | git tag `1.6` | Released 2024-04-09 (latest patch `1.6.2`, 2026-06-02) | 2026-08-21 | see `SHA256SUMS` below |
 | `cyclonedx-1.7.schema.json` | https://raw.githubusercontent.com/CycloneDX/specification/1.7/schema/bom-1.7.schema.json | git tag `1.7` | Released 2025-10-21 (latest patch `1.7.1`, 2026-06-02) | 2026-08-21 | see `SHA256SUMS` below |
-| `spdx.schema.json` | https://raw.githubusercontent.com/CycloneDX/specification/1.6/schema/spdx.schema.json | git tag `1.6` | external ref of the BOM schema (`license.id`); 704 SPDX ids | 2026-08-21 (M2) | — |
+| `spdx.schema.json` | https://raw.githubusercontent.com/CycloneDX/specification/1.6/schema/spdx.schema.json | git tag `1.6` | external ref of the BOM schema (`license.id`); 704 SPDX ids | 2026-08-21 (M2) | see `SHA256SUMS` |
 
 Both schemas declare `"$schema": "http://json-schema.org/draft-07/schema#"` and
 `"$id": "http://cyclonedx.org/schema/bom-1.<v>.schema.json"`.

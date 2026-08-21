@@ -2,15 +2,7 @@
 """Mermaid diagram of the chain; broken links are visible at a glance."""
 from __future__ import annotations
 
-import re
-
 from filo.ir import AccessStatus, Chain, LicenseConfidence
-
-_SAFE = re.compile(r"[^A-Za-z0-9]")
-
-
-def _node_id(canonical: str) -> str:
-    return "n_" + _SAFE.sub("_", canonical)
 
 
 def _label(a) -> str:
@@ -23,15 +15,27 @@ def _label(a) -> str:
     if a.access is not AccessStatus.PUBLIC:
         marks.append(a.access.value)
     suffix = f" [{', '.join(marks)}]" if marks else ""
-    return f"{name}{suffix}".replace('"', "'")
+    # keep the label a single, quote-free line
+    return f"{name}{suffix}".replace('"', "'").replace("\n", " ").replace("|", "/")
 
 
 def to_mermaid(chain: Chain) -> str:
+    # Deterministic, collision-free node ids: index by first appearance. Using a
+    # sanitised canonical id could collapse distinct ids (acme/a.b vs acme/a-b).
+    order: list[str] = list(chain.artifacts)
+    for r in chain.relations:  # include any dangling relation endpoints
+        for cid in (r.source_id, r.target_id):
+            if cid not in order:
+                order.append(cid)
+    node_id = {cid: f"n{i}" for i, cid in enumerate(order)}
+
     lines = ["graph TD"]
-    for a in chain.artifacts.values():
-        lines.append(f'    {_node_id(a.id)}["{_label(a)}"]')
+    for cid in order:
+        a = chain.artifacts.get(cid)
+        label = _label(a) if a is not None else cid.replace('"', "'")
+        lines.append(f'    {node_id[cid]}["{label}"]')
     for r in chain.relations:
         lines.append(
-            f"    {_node_id(r.source_id)} -->|{r.kind.value}| {_node_id(r.target_id)}"
+            f"    {node_id[r.source_id]} -->|{r.kind.value}| {node_id[r.target_id]}"
         )
     return "\n".join(lines)
