@@ -1,8 +1,15 @@
 # SPDX-License-Identifier: Apache-2.0
-"""Split and parse the YAML frontmatter of a model/dataset card."""
+"""Split and parse the YAML frontmatter of a model/dataset card.
+
+Upstream ids read here come from untrusted third-party cards, so
+``base_models``/``datasets`` filter every value through ``is_valid_repo_id``:
+a malformed reference is dropped, never returned for URL construction.
+"""
 from __future__ import annotations
 
 import yaml
+
+from filo.ids import is_valid_repo_id
 
 
 def split_frontmatter(text: str) -> tuple[dict, str]:
@@ -32,11 +39,11 @@ def _as_list(value) -> list[str]:
 def base_models(fm: dict) -> list[tuple[str, str | None]]:
     rel = fm.get("base_model_relation")
     rel = rel if isinstance(rel, str) else None
-    return [(rid, rel) for rid in _as_list(fm.get("base_model"))]
+    return [(rid, rel) for rid in _as_list(fm.get("base_model")) if is_valid_repo_id(rid)]
 
 
 def datasets(fm: dict) -> list[str]:
-    return _as_list(fm.get("datasets"))
+    return [d for d in _as_list(fm.get("datasets")) if is_valid_repo_id(d)]
 
 
 def license_fields(fm: dict) -> tuple[str | None, str | None, str | None]:

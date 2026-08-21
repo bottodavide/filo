@@ -40,3 +40,12 @@ def test_body_scan_inferred():
     links = collect_uplinks(info, readme=readme, no_body_scan=False)
     hit = [link for link in links if link.repo_id == "acme/data-b"][0]
     assert hit.confidence == "inferred" and hit.method is ExtractionMethod.CARD_BODY_LINK
+
+
+def test_malformed_upstreams_are_dropped():
+    # hostile base_model and a traversal-y dataset must not become uplinks
+    info = _info(
+        {"base_model": "no-slash", "datasets": ["owner/../../etc/passwd"]},
+        ["base_model:finetune:owner/.."],
+    )
+    assert collect_uplinks(info, readme=None, no_body_scan=True) == []

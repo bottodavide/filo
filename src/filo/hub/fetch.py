@@ -5,6 +5,17 @@ from __future__ import annotations
 import json as _json
 from dataclasses import dataclass
 from typing import Protocol
+from urllib.parse import urlparse
+
+_HF_HOST = "huggingface.co"
+
+
+def is_hf_url(url: str) -> bool:
+    """True only for https URLs on huggingface.co (or a subdomain). The bearer
+    token is attached only to these, so it can never be sent to another host."""
+    parts = urlparse(url)
+    host = parts.hostname or ""
+    return parts.scheme == "https" and (host == _HF_HOST or host.endswith("." + _HF_HOST))
 
 
 @dataclass
@@ -27,7 +38,10 @@ class HttpxFetcher:
     def get(self, url: str, *, token: str | None = None) -> Response:
         import httpx
 
-        headers = {"Authorization": f"Bearer {token}"} if token else {}
+        # Attach the token only to huggingface.co URLs. httpx also strips
+        # Authorization on cross-origin redirects; this is the explicit,
+        # tested belt-and-suspenders so that guarantee is not implicit.
+        headers = {"Authorization": f"Bearer {token}"} if token and is_hf_url(url) else {}
         try:
             r = httpx.get(
                 url, headers=headers, timeout=self._timeout, follow_redirects=True

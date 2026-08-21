@@ -1,6 +1,14 @@
 # SPDX-License-Identifier: Apache-2.0
-"""Parse input artifact ids and build stable canonical ids."""
+"""Parse input artifact ids and build stable canonical ids.
+
+``is_valid_repo_id`` is the single choke point that keeps untrusted values
+(``base_model``/``datasets`` from third-party cards, card-body links, tags)
+from reaching URL construction. Anything that fails it is treated as a
+malformed reference and skipped — never interpolated into a request URL.
+"""
 from __future__ import annotations
+
+import re
 
 from filo.ir import ArtifactKind
 
@@ -9,6 +17,19 @@ _KIND_PREFIX = {
     "dataset": ArtifactKind.DATASET,
     "datasets": ArtifactKind.DATASET,
 }
+
+# owner/name: each side starts alphanumeric (blocks leading '.', so '.'/'..'
+# segments and dotfiles are rejected) and contains only word chars, '.', '-'.
+_REPO_ID = re.compile(r"^[A-Za-z0-9][\w.-]*/[A-Za-z0-9][\w.-]*$")
+
+
+def is_valid_repo_id(repo_id: str) -> bool:
+    """True only for a safe single ``owner/name`` pair (no '.'/'..' segment,
+    no path traversal, no control chars, no host/scheme)."""
+    if not _REPO_ID.match(repo_id):
+        return False
+    ns, name = repo_id.split("/", 1)
+    return ns not in (".", "..") and name not in (".", "..")
 
 
 def parse_input_id(raw: str) -> tuple[ArtifactKind, str, str]:
@@ -22,8 +43,8 @@ def parse_input_id(raw: str) -> tuple[ArtifactKind, str, str]:
         kind = _KIND_PREFIX[prefix]
     elif rest.startswith("datasets/"):
         kind, rest = ArtifactKind.DATASET, rest[len("datasets/") :]
-    if rest.count("/") != 1 or rest.startswith("/") or rest.endswith("/"):
-        raise ValueError(f"expected owner/name, got {raw!r}")
+    if not is_valid_repo_id(rest):
+        raise ValueError(f"expected a safe owner/name, got {raw!r}")
     namespace, name = rest.split("/", 1)
     return kind, namespace, name
 

@@ -1,11 +1,14 @@
 # SPDX-License-Identifier: Apache-2.0
-"""Extract base-model references from config.json / adapter_config.json."""
+"""Extract base-model references from config.json / adapter_config.json.
+
+Values are validated through ``is_valid_repo_id`` (rejects '.'/'..' segments,
+traversal and control chars) before being returned for URL construction.
+"""
 from __future__ import annotations
 
 import json
-import re
 
-_REPO_LIKE = re.compile(r"^[A-Za-z0-9][\w.-]*/[\w.-]+$")
+from filo.ids import is_valid_repo_id
 
 
 def _load(data: bytes) -> dict | None:
@@ -21,7 +24,7 @@ def adapter_base_model(data: bytes) -> str | None:
     if not obj:
         return None
     v = obj.get("base_model_name_or_path")
-    return v if isinstance(v, str) and _REPO_LIKE.match(v) else None
+    return v if isinstance(v, str) and is_valid_repo_id(v) else None
 
 
 def config_base_model(data: bytes) -> str | None:
@@ -29,4 +32,4 @@ def config_base_model(data: bytes) -> str | None:
     if not obj:
         return None
     v = obj.get("_name_or_path")
-    return v if isinstance(v, str) and _REPO_LIKE.match(v) else None
+    return v if isinstance(v, str) and is_valid_repo_id(v) else None

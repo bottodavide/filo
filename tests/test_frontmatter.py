@@ -43,3 +43,13 @@ def test_license_fields():
 def test_no_frontmatter():
     fm, body = split_frontmatter("just body")
     assert fm == {} and body == "just body"
+
+
+def test_malformed_base_model_is_filtered():
+    fm = {"base_model": ["no-slash", "owner/../../etc", "acme/ok-a"]}
+    assert base_models(fm) == [("acme/ok-a", None)]
+
+
+def test_malformed_datasets_are_filtered():
+    fm = {"datasets": ["owner/name\r\nEvil: 1", "acme/data-a", ".hidden/x"]}
+    assert datasets(fm) == ["acme/data-a"]

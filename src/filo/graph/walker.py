@@ -7,7 +7,7 @@ from collections import deque
 from filo.evidence import absent_license, build_evidence, utcnow
 from filo.graph.model import collect_uplinks
 from filo.hub.client import HFClient, RepoInfo
-from filo.ids import canonical_id, dedup_key, parse_input_id
+from filo.ids import canonical_id, dedup_key, is_valid_repo_id, parse_input_id
 from filo.ir import (
     AccessStatus,
     Artifact,
@@ -18,6 +18,7 @@ from filo.ir import (
     LicenseConfidence,
     Relation,
     TraversalParams,
+    Warning,
 )
 from filo.parse.licenses import is_opaque, to_spdx
 
@@ -47,6 +48,7 @@ def walk(
     artifacts: dict[str, Artifact] = {}
     relations: list[Relation] = []
     reasons: list[str] = []
+    warnings: list[Warning] = []
     visited: set[str] = set()
 
     root_ids: list[str] = []
@@ -89,6 +91,17 @@ def walk(
             continue
 
         for link in collect_uplinks(info, readme, no_body_scan=params.no_body_scan):
+            # Fail closed: a malformed upstream reference is recorded as a
+            # documented warning and skipped, never interpolated into a URL.
+            if not is_valid_repo_id(link.repo_id):
+                warnings.append(
+                    Warning(
+                        code="malformed_upstream_reference",
+                        message=f"skipped malformed upstream reference {link.repo_id!r}",
+                        artifact_id=cid,
+                    )
+                )
+                continue
             tns, tname = link.repo_id.split("/", 1)
             tid = canonical_id(link.kind, tns, tname)
             ev = build_evidence(api_url, link.method, repo_sha=info.sha, text=link.snippet)
@@ -105,4 +118,5 @@ def walk(
         traversal=params.model_copy(
             update={"truncated": truncated, "truncation_reasons": reasons}
         ),
+        warnings=warnings,
     )

@@ -42,3 +42,26 @@ def broken_chain_cassette(tmp_path):
     (tmp_path / "model_readme.md").write_text(_MODEL_README)
     (tmp_path / "dataset_readme.md").write_text(_DATASET_README)
     return tmp_path
+
+
+# A model card carrying hostile upstream references alongside one valid dataset.
+_MALFORMED_MODEL_INFO = {
+    "sha": "modelsha",
+    "cardData": {
+        "license": "mit",
+        "base_model": "no-slash-at-all",
+        "datasets": ["owner/../../etc/passwd", "acme/dataset-a"],
+    },
+    "tags": ["base_model:finetune:owner/.."],
+    "gated": False,
+}
+
+
+@pytest.fixture
+def malformed_upstream_cassette(tmp_path):
+    (tmp_path / "index.json").write_text(json.dumps(_INDEX))
+    (tmp_path / "model_info.json").write_text(json.dumps(_MALFORMED_MODEL_INFO))
+    (tmp_path / "dataset_info.json").write_text(json.dumps(_DATASET_INFO))
+    (tmp_path / "model_readme.md").write_text("# Model A\nno links here\n")
+    (tmp_path / "dataset_readme.md").write_text(_DATASET_README)
+    return tmp_path

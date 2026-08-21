@@ -6,6 +6,7 @@ import re
 from dataclasses import dataclass
 from typing import Literal
 
+from filo.ids import is_valid_repo_id
 from filo.ir import ArtifactKind, ExtractionMethod, RelationKind
 from filo.parse import cardbody, frontmatter
 
@@ -38,6 +39,10 @@ def collect_uplinks(info, readme: str | None, *, no_body_scan: bool) -> list[UpL
     out: dict[tuple[ArtifactKind, str], UpLink] = {}
 
     def add(link: UpLink) -> None:
+        # Single choke point: never accept a repo_id that could reach URL
+        # construction unvalidated (auto-tags and card-body links included).
+        if not is_valid_repo_id(link.repo_id):
+            return
         key = (link.kind, link.repo_id)
         prev = out.get(key)
         if prev is None or (prev.confidence == "inferred" and link.confidence == "declared"):
