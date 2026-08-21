@@ -1,0 +1,487 @@
+{
+  "$defs": {
+    "AccessStatus": {
+      "enum": [
+        "public",
+        "gated",
+        "private",
+        "not_found",
+        "error"
+      ],
+      "title": "AccessStatus",
+      "type": "string"
+    },
+    "Artifact": {
+      "properties": {
+        "access": {
+          "$ref": "#/$defs/AccessStatus"
+        },
+        "access_note": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Access Note"
+        },
+        "depth": {
+          "default": 0,
+          "title": "Depth",
+          "type": "integer"
+        },
+        "downloads": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Downloads"
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "kind": {
+          "$ref": "#/$defs/ArtifactKind"
+        },
+        "last_modified": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Last Modified"
+        },
+        "licenses": {
+          "items": {
+            "$ref": "#/$defs/LicenseAssertion"
+          },
+          "title": "Licenses",
+          "type": "array"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "namespace": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Namespace"
+        },
+        "platform": {
+          "title": "Platform",
+          "type": "string"
+        },
+        "raw_tags": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Raw Tags",
+          "type": "array"
+        },
+        "retrieved_at": {
+          "format": "date-time",
+          "title": "Retrieved At",
+          "type": "string"
+        },
+        "revision": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Revision"
+        },
+        "url": {
+          "anyOf": [
+            {
+              "format": "uri",
+              "maxLength": 2083,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Url"
+        }
+      },
+      "required": [
+        "id",
+        "kind",
+        "platform",
+        "name",
+        "access",
+        "retrieved_at"
+      ],
+      "title": "Artifact",
+      "type": "object"
+    },
+    "ArtifactKind": {
+      "enum": [
+        "model",
+        "dataset",
+        "code",
+        "service"
+      ],
+      "title": "ArtifactKind",
+      "type": "string"
+    },
+    "EvidenceRef": {
+      "description": "Provenance of a single assertion. Required wherever an assertion is made.",
+      "properties": {
+        "method": {
+          "$ref": "#/$defs/ExtractionMethod"
+        },
+        "repo_sha": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Repo Sha"
+        },
+        "retrieved_at": {
+          "format": "date-time",
+          "title": "Retrieved At",
+          "type": "string"
+        },
+        "searched_locations": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Searched Locations",
+          "type": "array"
+        },
+        "snippet": {
+          "anyOf": [
+            {
+              "maxLength": 500,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Snippet"
+        },
+        "snippet_sha256": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Snippet Sha256"
+        },
+        "url": {
+          "format": "uri",
+          "maxLength": 2083,
+          "minLength": 1,
+          "title": "Url",
+          "type": "string"
+        }
+      },
+      "required": [
+        "url",
+        "retrieved_at",
+        "method"
+      ],
+      "title": "EvidenceRef",
+      "type": "object"
+    },
+    "ExtractionMethod": {
+      "enum": [
+        "api_tag",
+        "card_frontmatter",
+        "card_body_link",
+        "card_body_text",
+        "repo_file",
+        "hf_auto_tag",
+        "absent"
+      ],
+      "title": "ExtractionMethod",
+      "type": "string"
+    },
+    "LicenseAssertion": {
+      "properties": {
+        "confidence": {
+          "$ref": "#/$defs/LicenseConfidence"
+        },
+        "evidence": {
+          "$ref": "#/$defs/EvidenceRef"
+        },
+        "license_link": {
+          "anyOf": [
+            {
+              "format": "uri",
+              "maxLength": 2083,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "License Link"
+        },
+        "license_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "License Name"
+        },
+        "raw_value": {
+          "default": "",
+          "title": "Raw Value",
+          "type": "string"
+        },
+        "spdx_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Spdx Id"
+        }
+      },
+      "required": [
+        "confidence",
+        "evidence"
+      ],
+      "title": "LicenseAssertion",
+      "type": "object"
+    },
+    "LicenseConfidence": {
+      "enum": [
+        "declared",
+        "inferred",
+        "opaque",
+        "absent"
+      ],
+      "title": "LicenseConfidence",
+      "type": "string"
+    },
+    "Relation": {
+      "properties": {
+        "confidence": {
+          "enum": [
+            "declared",
+            "inferred"
+          ],
+          "title": "Confidence",
+          "type": "string"
+        },
+        "evidence": {
+          "$ref": "#/$defs/EvidenceRef"
+        },
+        "kind": {
+          "$ref": "#/$defs/RelationKind"
+        },
+        "source_id": {
+          "title": "Source Id",
+          "type": "string"
+        },
+        "target_id": {
+          "title": "Target Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "source_id",
+        "target_id",
+        "kind",
+        "confidence",
+        "evidence"
+      ],
+      "title": "Relation",
+      "type": "object"
+    },
+    "RelationKind": {
+      "enum": [
+        "finetuned_from",
+        "adapter_of",
+        "quantized_from",
+        "merged_from",
+        "trained_on",
+        "evaluated_on",
+        "derived_from",
+        "uses_service"
+      ],
+      "title": "RelationKind",
+      "type": "string"
+    },
+    "TraversalParams": {
+      "description": "Every limit applied to the traversal is declared here (invariant 4).",
+      "properties": {
+        "max_artifacts": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Max Artifacts"
+        },
+        "max_depth": {
+          "default": 6,
+          "title": "Max Depth",
+          "type": "integer"
+        },
+        "no_body_scan": {
+          "default": false,
+          "title": "No Body Scan",
+          "type": "boolean"
+        },
+        "truncated": {
+          "default": false,
+          "title": "Truncated",
+          "type": "boolean"
+        },
+        "truncation_reasons": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Truncation Reasons",
+          "type": "array"
+        }
+      },
+      "title": "TraversalParams",
+      "type": "object"
+    },
+    "Warning": {
+      "properties": {
+        "artifact_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Artifact Id"
+        },
+        "code": {
+          "title": "Code",
+          "type": "string"
+        },
+        "message": {
+          "title": "Message",
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "message"
+      ],
+      "title": "Warning",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "artifacts": {
+      "additionalProperties": {
+        "$ref": "#/$defs/Artifact"
+      },
+      "title": "Artifacts",
+      "type": "object"
+    },
+    "generated_at": {
+      "format": "date-time",
+      "title": "Generated At",
+      "type": "string"
+    },
+    "generator": {
+      "title": "Generator",
+      "type": "string"
+    },
+    "relations": {
+      "items": {
+        "$ref": "#/$defs/Relation"
+      },
+      "title": "Relations",
+      "type": "array"
+    },
+    "roots": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Roots",
+      "type": "array"
+    },
+    "schema_version": {
+      "const": 1,
+      "default": 1,
+      "title": "Schema Version",
+      "type": "integer"
+    },
+    "traversal": {
+      "$ref": "#/$defs/TraversalParams"
+    },
+    "warnings": {
+      "items": {
+        "$ref": "#/$defs/Warning"
+      },
+      "title": "Warnings",
+      "type": "array"
+    }
+  },
+  "required": [
+    "roots",
+    "generated_at",
+    "generator",
+    "traversal"
+  ],
+  "title": "Chain",
+  "type": "object"
+}
