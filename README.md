@@ -11,8 +11,7 @@ judgements. What each license *requires* is out of scope on purpose.
 > **Status:** M0–M2 complete. `filo trace owner/name` walks the chain and writes a
 > `chain.json`, a schema-validated **CycloneDX 1.6/1.7 AIBOM** (`bom.cdx.json`), a `report.md`
 > and a Mermaid diagram — all evidence-backed. `filo validate <bom>` checks a BOM against the
-> official schemas offline. Not implemented yet: the public web demo. See `DEVELOPMENT.md` for the
-> build order and invariants.
+> official schemas offline.
 
 ## The four invariants
 
